@@ -1,6 +1,7 @@
-# SlimeVR Tracker firmware for ESP
+# SlimeVR Tracker firmware for the Pico W.
 
-Firmware for ESP8266 / ESP32 microcontrollers and different IMU sensors to use them as a vive-like trackers in VR.
+Firmware for the Pico W board and different IMU sensors to use them as a vive-like trackers in VR.
+###### should also build on all the other boards, I think.
 
 Requires [SlimeVR Server](https://github.com/SlimeVR/SlimeVR-Server) to work with SteamVR and resolve pose. Should be compatible with [owoTrack](https://github.com/abb128/owo-track-driver), but is not guaranteed.
 
@@ -36,7 +37,7 @@ The following IMUs and their corresponding `IMU` values are supported by the fir
   * Comment out `USE_6DOF` in `debug.h` for 9DoF mode.
   * Experimental support!
 
-Firmware can work with both ESP8266 and ESP32. Please edit `defines.h` and set your pinout properly according to how you connected the IMU.
+Please edit `defines.h` and set your pinout properly according to how you connected the IMU.
 
 ## Sensor calibration
 
@@ -94,13 +95,6 @@ Firmware can work with both ESP8266 and ESP32. Please edit `defines.h` and set y
     Check if pitch/roll resembles its real orientation.
 
   - Calibration data is written to the flash of your MCU and is unique for each BMI160, keep that in mind if you have detachable aux trackers.
-
-## Infos about ESP32-C3 with direct connection to USB
-
-The ESP32-C3 has two ways to connect the serial port. One is directly via the onboard USB CDC or via the onboard UART.
-When the chip is connected to the USB CDC, the serial port shows as `USB Serial Port` in Device Manager. The SlimeVR server will currently not connect to this port.
-If you want to set your WiFi credentials, you can use the PlatformIO serial console.
-There you have to enter the following: `SET WIFI "SSID" "PASSWORD"`
 
 ## Uploading On Linux
 
