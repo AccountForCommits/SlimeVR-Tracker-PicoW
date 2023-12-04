@@ -227,42 +227,53 @@ namespace SerialCommands {
         }
 
         if (parser->equalCmdParam(1, "WIFISCAN")) {
-			logger.info("[WSCAN] Scanning for WiFi networks...");
+    			logger.info("[WSCAN] Scanning for WiFi networks...");
 
-			// Scan would fail if connecting, stop connecting before scan
-			if (WiFi.status() != WL_CONNECTED) {
-				WiFi.disconnect();
-			}
-			if (WiFiNetwork::isProvisioning()) {
-				WiFiNetwork::stopProvisioning();
-			}
+    			// Scan would fail if connecting, stop connecting before scan
+    			if (WiFi.status() != WL_CONNECTED) {
+    				WiFi.disconnect();
+    			}
+    			if (WiFiNetwork::isProvisioning()) {
+    				WiFiNetwork::stopProvisioning();
+    			}
 
-			WiFi.scanNetworks();
+    			WiFi.scanNetworks();
 
-			int scanRes = WiFi.scanComplete();
-			if (scanRes >= 0) {
-				logger.info("[WSCAN] Found %d networks:", scanRes);
-				for (int i = 0; i < scanRes; i++) {
-					logger.info("[WSCAN] %d:\t%02d\t%s\t(%d)\t%s",
-						i, WiFi.SSID(i).length(), WiFi.SSID(i).c_str(), WiFi.RSSI(i),
-						((WiFi.encryptionType(i) == 0) ? "OPEN" : "PASS")
-					);
-				}
-				WiFi.scanDelete();
-			} else {
-				logger.info("[WSCAN] Scan failed!");
-			}
+    			int scanRes = WiFi.scanComplete();
+    			if (scanRes >= 0) {
+    				logger.info("[WSCAN] Found %d networks:", scanRes);
+    				for (int i = 0; i < scanRes; i++) {
+              #if RPIPICOW
+      					logger.info("[WSCAN] %d:\t%s\t(%d)\t%s",
+      						i, WiFi.SSID(i), WiFi.RSSI(i),
+      						((WiFi.encryptionType(i) == 0) ? "OPEN" : "PASS")
+      					);
+              #else
+                logger.info("[WSCAN] %d:\t%02d\t%s\t(%d)\t%s",
+                       i, WiFi.SSID(i).length(), WiFi.SSID(i).c_str(), WiFi.RSSI(i),
+                       ((WiFi.encryptionType(i) == 0) ? "OPEN" : "PASS")
+                );
+              #endif
+    				}
+    				WiFi.scanDelete();
+    			} else {
+    				logger.info("[WSCAN] Scan failed!");
+    			}
 
-			// Restore conencting state
-			if (WiFi.status() != WL_CONNECTED) {
-				WiFi.begin();
-			}
+    			// Restore connecting state
+          #if !RPIPICOW
+    			if (WiFi.status() != WL_CONNECTED) {
+    				WiFi.begin();
+          }
+    			#endif
         }
     }
 
     void cmdReboot(CmdParser * parser) {
         logger.info("REBOOT");
+        #if !RPIPICOW
         ESP.restart();
+        #endif
     }
 
     void cmdFactoryReset(CmdParser * parser) {
@@ -287,7 +298,9 @@ namespace SerialCommands {
         #endif
 
         delay(3000);
+        #if !RPIPICOW
         ESP.restart();
+        #endif
     }
 
     void cmdTemperatureCalibration(CmdParser* parser) {

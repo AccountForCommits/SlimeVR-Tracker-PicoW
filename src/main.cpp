@@ -81,10 +81,12 @@ void setup()
     // For some unknown reason the I2C seem to be open on ESP32-C3 by default. Let's just close it before opening it again. (The ESP32-C3 only has 1 I2C.)
     Wire.end();
 #endif
-
+#if RPIPICOW
+    Wire.begin();
+#else
     // using `static_cast` here seems to be better, because there are 2 similar function signatures
     Wire.begin(static_cast<int>(PIN_IMU_SDA), static_cast<int>(PIN_IMU_SCL));
-
+#endif
 #ifdef ESP8266
     Wire.setClockStretchLimit(150000L); // Default stretch limit 150mS
 #endif

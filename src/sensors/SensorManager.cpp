@@ -135,11 +135,19 @@ namespace SlimeVR
                     if (running) {
                         i2c_set_pin(I2C_NUM_0, sdaPin, sclPin, false, false, I2C_MODE_MASTER);
                     } else {
+                        #if RPIPICOW
+                        Wire.begin();
+                        #else
                         Wire.begin(static_cast<int>(sdaPin), static_cast<int>(sclPin), I2C_SPEED);
+                        #endif
                         Wire.setTimeOut(150);
                     }
                 #else
+                    #if RPIPICOW
+                    Wire.begin();
+                    #else
                     Wire.begin(static_cast<int>(sdaPin), static_cast<int>(sclPin));
+                    #endif
                 #endif
 
                 activeSCL = sclPin;

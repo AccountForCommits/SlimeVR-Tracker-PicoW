@@ -47,6 +47,10 @@ void BatteryMonitor::Setup()
 
 void BatteryMonitor::Loop()
 {
+    // RPIPICOW: had issues with this, but wasn't sure
+    // if they were just specific to me, and don't have
+    // a way to test other options. So i've reverted the changes.
+    // (since they were just logical issues, not build issues)
     #if BATTERY_MONITOR == BAT_EXTERNAL || BATTERY_MONITOR == BAT_INTERNAL || BATTERY_MONITOR == BAT_MCP3021 || BATTERY_MONITOR == BAT_INTERNAL_MCP3021
         auto now_ms = millis();
         if (now_ms - last_battery_sample >= batterySampleRate)

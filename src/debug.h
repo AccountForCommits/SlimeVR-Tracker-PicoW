@@ -78,7 +78,11 @@
 // Experimental
 #define OPTIMIZE_UPDATES true
 
-#define I2C_SPEED 400000
+#if RPIPICOW
+    #define I2C_SPEED 100000
+#else
+    #define I2C_SPEED 400000
+#endif
 
 #define COMPLIANCE_MODE true
 #define USE_ATTENUATION COMPLIANCE_MODE && ESP8266

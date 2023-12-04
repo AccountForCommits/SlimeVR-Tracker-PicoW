@@ -35,6 +35,11 @@
 #include "../motionprocessing/GyroTemperatureCalibrator.h"
 #include "../motionprocessing/RestDetection.h"
 
+// lazy fix: max and min aren't constexpr (?) on rpipicow
+// this apparently works, though has side effects. Think it's fine here, though.
+#define MIN2(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define MAX2(X, Y) (((X) > (Y)) ? (X) : (Y))
+
 #if BMI160_USE_VQF
     #if USE_6_AXIS
         #define BMI160_GYRO_RATE BMI160_GYRO_RATE_400HZ
@@ -74,7 +79,7 @@ constexpr float BMI160_ODR_MAG_HZ = 0;
 constexpr float BMI160_ODR_MAG_MICROS = 0;
 #endif
 
-constexpr uint16_t BMI160_SETTINGS_MAX_ODR_HZ = max(max(BMI160_ODR_GYR_HZ, BMI160_ODR_ACC_HZ), BMI160_ODR_MAG_HZ);
+constexpr uint16_t BMI160_SETTINGS_MAX_ODR_HZ = MAX2(MAX2(BMI160_ODR_GYR_HZ, BMI160_ODR_ACC_HZ), BMI160_ODR_MAG_HZ);
 constexpr uint16_t BMI160_SETTINGS_MAX_ODR_MICROS = BMI160_MAP_ODR_MICROS(1.0f / BMI160_SETTINGS_MAX_ODR_HZ * 1e6f);
 
 constexpr float BMI160_FIFO_AVG_DATA_FRAME_LENGTH = (
@@ -87,7 +92,7 @@ constexpr float BMI160_FIFO_READ_BUFFER_SIZE_MICROS = 30000;
 constexpr float BMI160_FIFO_READ_BUFFER_SIZE_SAMPLES =
     BMI160_SETTINGS_MAX_ODR_HZ * BMI160_FIFO_READ_BUFFER_SIZE_MICROS / 1e6f;
 constexpr uint16_t BMI160_FIFO_MAX_LENGTH = 1024;
-constexpr uint16_t BMI160_FIFO_READ_BUFFER_SIZE_BYTES = min(
+constexpr uint16_t BMI160_FIFO_READ_BUFFER_SIZE_BYTES = MIN2(
     (float)BMI160_FIFO_MAX_LENGTH - 64,
     BMI160_FIFO_READ_BUFFER_SIZE_SAMPLES * BMI160_FIFO_AVG_DATA_FRAME_LENGTH * 1.25f
 );

@@ -37,6 +37,11 @@
     #define ADCResulution 4095.0  // ESP32 has 12bit ADC
     #define ADCVoltageMax 3.3     // ESP32 input is 3.3 V = 4095.0
 #endif
+#if RPIPICOW
+    // resulution?
+    #define ADCResulution 4095.0
+    #define ADCVoltageMax 3.3
+#endif
 #ifndef ADCResulution
     #define ADCResulution 1023.0
 #endif

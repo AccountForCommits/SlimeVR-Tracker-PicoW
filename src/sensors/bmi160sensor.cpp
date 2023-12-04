@@ -26,6 +26,10 @@
 #include <hmc5883l.h>
 #include <qmc5883l.h>
 #include <map>
+// unsure if this is fine, but it builds & looks about right.
+#if RPIPICOW
+    #define optimistic_yield sleep_us
+#endif
 
 void BMI160Sensor::initHMC(BMI160MagRate magRate) {
     /* Configure MAG interface and setup mode */

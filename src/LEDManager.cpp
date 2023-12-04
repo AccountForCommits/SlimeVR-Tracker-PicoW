@@ -27,6 +27,7 @@
 
 namespace SlimeVR
 {
+    // RPIPICOW: TODO: talk to wifi hardware to use on-board led.
     void LEDManager::setup()
     {
 #if ENABLE_LEDS

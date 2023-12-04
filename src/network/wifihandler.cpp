@@ -24,7 +24,11 @@
 #include "logging/Logger.h"
 #include "GlobalVars.h"
 #if !ESP8266
-#include "esp_wifi.h"
+    #if RPIPICOW
+        #include <WiFi.h>
+    #else
+        #include "esp_wifi.h"
+    #endif
 #endif
 
 unsigned long lastWifiReportTime = 0;
@@ -82,9 +86,23 @@ void WiFiNetwork::setUp() {
     WiFi.setPhyMode(WIFI_PHY_MODE_11N);
     #endif
     WiFi.hostname("SlimeVR FBT Tracker");
+    #if RPIPICOW
+    wifiHandlerLogger.info("Loaded credentials for SSID %s", WiFi.SSID().c_str());
+    #else
     wifiHandlerLogger.info("Loaded credentials for SSID %s and pass length %d", WiFi.SSID().c_str(), WiFi.psk().length());
+    #endif
     setStaticIPIfDefined();
+    #if RPIPICOW
+        #if !defined(WIFI_CREDS_SSID) || !defined(WIFI_CREDS_PASSWD)
+            #warning The RPIPICOW board does not support connecting to last used access point & there are no hardcoded credentials. It will not connect to wifi without serial.
+            int status = -1;
+        #else
+            // the rpipicow wifi library does not support connecting to last access point.
+            wl_status_t status = (wl_status_t)WiFi.begin(WIFI_CREDS_SSID, WIFI_CREDS_PASSWD);
+        #endif
+    #else
     wl_status_t status = WiFi.begin(); // Should connect to last used access point, see https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/station-class.html#begin
+    #endif
     wifiHandlerLogger.debug("Status: %d", status);
     wifiState = SLIME_WIFI_SAVED_ATTEMPT;
     wifiConnectionTimeout = millis();
@@ -222,13 +240,15 @@ void WiFiNetwork::upkeep() {
                         WiFi.setPhyMode(WIFI_PHY_MODE_11N);
                     #endif
                     // Start smart config
-                    if(!hadWifi && !WiFi.smartConfigDone() && wifiConnectionTimeout + 11000 < millis()) {
-                        if(WiFi.status() != WL_IDLE_STATUS) {
-                            wifiHandlerLogger.error("Can't connect from any credentials, status: %d.", WiFi.status());
-                            wifiConnectionTimeout = millis();
+                    #if !RPIPICOW
+                        if(!hadWifi && !WiFi.smartConfigDone() && wifiConnectionTimeout + 11000 < millis()) {
+                            if(WiFi.status() != WL_IDLE_STATUS) {
+                                wifiHandlerLogger.error("Can't connect from any credentials, status: %d.", WiFi.status());
+                                wifiConnectionTimeout = millis();
+                            }
+                            startProvisioning();
                         }
-                        startProvisioning();
-                    }
+                    #endif
                 return;
             }
         }

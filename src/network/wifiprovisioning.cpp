@@ -37,15 +37,19 @@ void WiFiNetwork::upkeepProvisioning() {
 }
 
 void WiFiNetwork::startProvisioning() {
+    #if !RPIPICOW
     if(WiFi.beginSmartConfig()) {
         provisioning = true;
         wifiProvisioningLogger.info("SmartConfig started");
     }
+    #endif
 }
 
 void WiFiNetwork::stopProvisioning() {
+    #if !RPIPICOW
     WiFi.stopSmartConfig();
     provisioning = false;
+    #endif
 }
 
 void WiFiNetwork::provideNeighbours() {
@@ -53,5 +57,9 @@ void WiFiNetwork::provideNeighbours() {
 }
 
 bool WiFiNetwork::isProvisioning() {
+    #if RPIPICOW
+    return false;
+    #else
     return provisioning && !WiFi.smartConfigDone();
+    #endif
 }

@@ -28,7 +28,7 @@
 // Set parameters of IMU and board used
 #define IMU IMU_BNO085
 #define SECOND_IMU IMU
-#define BOARD BOARD_SLIMEVR
+#define BOARD BOARD_RPIPICOW
 #define IMU_ROTATION DEG_270
 #define SECOND_IMU_ROTATION DEG_270
 
@@ -56,7 +56,8 @@ IMU_DESC_ENTRY(IMU_BMP160, PRIMARY_IMU_ADDRESS_ONE, IMU_ROTATION, PIN_IMU_SCL, P
 //   BAT_EXTERNAL for ADC pin, 
 //   BAT_INTERNAL for internal - can detect only low battery, 
 //   BAT_MCP3021 for external ADC connected over I2C
-#define BATTERY_MONITOR BAT_EXTERNAL
+// BAT_EXTERNAL may cause wifi issues on the rpipicow board.
+#define BATTERY_MONITOR BAT_INTERNAL
 
 // BAT_EXTERNAL definition override
 // D1 Mini boards with ESP8266 have internal resistors. For these boards you only have to adjust BATTERY_SHIELD_RESISTANCE.
@@ -165,6 +166,14 @@ IMU_DESC_ENTRY(IMU_BMP160, PRIMARY_IMU_ADDRESS_ONE, IMU_ROTATION, PIN_IMU_SCL, P
   #define PIN_BATTERY_LEVEL 3
   #define LED_PIN 7
 //  #define LED_INVERTED false
+#elif BOARD == BOARD_RPIPICOW
+  #define PIN_IMU_SDA 4
+  #define PIN_IMU_SCL 5
+  #define PIN_IMU_INT 0
+  #define PIN_IMU_INT_2 1
+  #define PIN_BATTERY_LEVEL 26
+  #define LED_PIN 22
+  #define LED_INVERTED false
 #elif BOARD == BOARD_BEETLE32C3
   #define PIN_IMU_SDA 8
   #define PIN_IMU_SCL 9

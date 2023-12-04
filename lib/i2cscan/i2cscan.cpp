@@ -14,6 +14,12 @@ String portMap[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10"};
 uint8_t portArray[] = {4, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33};
 String portMap[] = {"4", "13", "14", "15", "16", "17", "18", "19", "21", "22", "23", "25", "26", "27", "32", "33"};
 uint8_t portExclude[] = {LED_PIN};
+#elif defined(RPIPICOW)
+// I think there's only 2 "channels" but all of these pins can be used for i2c so...
+// 27 and 26 are excluded due to being ADC pins (for uhh battery of course)
+uint8_t portArray[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21};
+String portMap[] = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21"};
+uint8_t portExclude[] = {};
 #endif
 
 namespace I2CSCAN
@@ -58,7 +64,11 @@ namespace I2CSCAN
 #endif
 
         // Reset the I2C interface back to it's original values
+        #if RPIPICOW
+        Wire.begin();
+        #else
         Wire.begin(static_cast<int>(PIN_IMU_SDA), static_cast<int>(PIN_IMU_SCL));
+        #endif
     }
 
     bool inArray(uint8_t value, uint8_t* array, size_t arraySize)
@@ -82,7 +92,11 @@ namespace I2CSCAN
         Wire.end();
 #endif
 
+        #if RPIPICOW
+        Wire.begin();
+        #else
         Wire.begin((int)portArray[i], (int)portArray[j]);
+        #endif
 
         byte error, address;
         int nDevices;
