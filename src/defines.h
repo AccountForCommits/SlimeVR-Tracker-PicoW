@@ -35,6 +35,8 @@
 #define PRIMARY_IMU_OPTIONAL false
 #define SECONDARY_IMU_OPTIONAL true
 
+// TODO: RPIPICOW has 2 hardware i2c channels, & 8 state machines (8 one-way i2c, or 4 bidirectional i2c).
+// implement for 6-10 imus for 1 board (full lower body set, at minimum)
 #define MAX_IMU_COUNT 2
 
 // Axis mapping example
